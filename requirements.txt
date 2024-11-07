@@ -1,0 +1,7 @@
+pillow
+rembg
+tensorflow
+numpy 
+matplotlib 
+pathlib
+protobuf
