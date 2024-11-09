@@ -88,6 +88,7 @@ def trainAndtest():
   imagenes_prueba = np.empty((num_prueba * len(clases), 80, 120), dtype="uint8")
   clases_prueba = np.empty(num_prueba * len(clases), dtype="uint8")
 
+
   # Cargar datos de Entrenamiento: imágenes de la 0 a la 489
   print(num_entrena)
   for i in range(num_entrena):
