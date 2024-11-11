@@ -24,7 +24,7 @@ def main():
     elif op == 2: 
       train_and_test()
     elif op == 3: 
-      modelo = load_model("modelo.h5")
+      modelo = load_model("modelo.keras")
       predict_image(modelo)
     elif op == 4:
       break   
@@ -37,7 +37,7 @@ def train_model(img_train,class_train):
   modelo = tf.keras.Sequential([
       tf.keras.layers.Flatten(input_shape=(90, 100)),
       tf.keras.layers.Dense(64, activation="relu"),
-      tf.keras.layers.Dense(4), # Cantidad de clases 
+      tf.keras.layers.Dense(5), # Cantidad de clases 
       tf.keras.layers.Softmax()
   ])
   modelo.compile(optimizer="sgd",
@@ -45,7 +45,7 @@ def train_model(img_train,class_train):
               metrics=["accuracy"])
   
   modelo.fit(img_train, class_train, epochs=50)
-  modelo.save("modelo.h5") # Guarda el modelo entrenado
+  modelo.save("modelo.keras") # Guarda el modelo entrenado
   return modelo
 
 def predict_image(modelo):
@@ -85,11 +85,11 @@ def predict_image(modelo):
     plt.yticks([])
     plt.show()
     imagen_array = np.expand_dims(imagen_array, axis=0)  # Expandir dimensiones para que se ajuste a la entrada del modelo
-    
+    #imagen_array = imagen_array/255  # Expandir dimensiones para que se ajuste a la entrada del modelo
     # Hacer la predicción
     prediccion = modelo.predict(imagen_array)
     clase_predicha = np.argmax(prediccion)
-    descripcion = ("veinte", "cincuenta", "doscientos", "quinientos")
+    descripcion = ("veinte", "cincuenta", "doscientos", "quinientos","mil")
     
     print(f"La imagen es probablemente un billete de {descripcion[clase_predicha]} pesos.")
 
