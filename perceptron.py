@@ -35,7 +35,7 @@ def main():
 # ----- Funcion para entrenar el modelo 
 def train_model(img_train,class_train):
   modelo = tf.keras.Sequential([
-      tf.keras.layers.Flatten(input_shape=(90, 100)),
+      tf.keras.layers.Flatten(input_shape=(250, 250)),
       tf.keras.layers.Dense(64, activation="relu"),
       tf.keras.layers.Dense(5), # Cantidad de clases 
       tf.keras.layers.Softmax()
@@ -70,7 +70,7 @@ def predict_image(modelo):
             imagen = imagen.transpose(Image.ROTATE_90) # Rota la imagen a 90 grados
 
         # Aplica redimensionamiento y convierte a escala de grises
-        imagen = imagen.resize((100, 90))
+        imagen = imagen.resize((250, 250))
         imagen = imagen.convert("L")
     
     # Convertir la imagen a un arreglo numpy y escalar
@@ -83,12 +83,13 @@ def predict_image(modelo):
     plt.grid(False)
     plt.xticks([])
     plt.yticks([])
-    plt.show()
+    #plt.show()
     imagen_array = np.expand_dims(imagen_array, axis=0)  # Expandir dimensiones para que se ajuste a la entrada del modelo
     #imagen_array = imagen_array/255  # Expandir dimensiones para que se ajuste a la entrada del modelo
     # Hacer la predicción
     prediccion = modelo.predict(imagen_array)
     clase_predicha = np.argmax(prediccion)
+    print(clase_predicha)
     descripcion = ("veinte", "cincuenta", "doscientos", "quinientos","mil")
     
     print(f"La imagen es probablemente un billete de {descripcion[clase_predicha]} pesos.")
@@ -120,7 +121,7 @@ def Custom_Image(carpeta_entrada,carpeta_salida):
               imagen = imagen.transpose(Image.ROTATE_90)  # Rota la imagen 90 grados en el sentido de las agujas del reloj
 
           # Aplica redimensionamiento y convierte a escala de grises
-          imagen = imagen.resize((100, 90))
+          imagen = imagen.resize((250, 250))
           imagen = imagen.convert("L")
           # Define el nuevo nombre para la imagen procesada usando el contador
           nuevo_nombre = f"{contador}.png"  # Cambia la extensión si lo deseas
@@ -138,8 +139,8 @@ def train_and_test():
   ruta = str(pathlib.Path(archivo)) 
   
   # Descripción de clases y su identificador
-  descripcion = ("veinte", "cincuenta","doscientos", "quinientos")
-  clases = {"veinte":0, "cincuenta":1,"doscientos":2, "quinientos":3}
+  descripcion = ("veinte", "cincuenta","doscientos", "quinientos","mil")
+  clases = {"veinte":0, "cincuenta":1,"doscientos":2, "quinientos":3,"mil":4}
 
   # Número de imágenes de cada clase
   num_img_clase = 100
@@ -152,10 +153,10 @@ def train_and_test():
 
   # Creación de arreglos para almacenar datos de Entrenamiento y Prueba para cada clase
   # Las imágenes son de 90 (alto) x 100 (ancho)
-  imagenes_entrena = np.empty((num_entrena * len(clases), 90, 100), dtype="uint8")
+  imagenes_entrena = np.empty((num_entrena * len(clases), 250, 250), dtype="uint8")
   clases_entrena = np.empty(num_entrena * len(clases), dtype="uint8")
 
-  imagenes_prueba = np.empty((num_prueba * len(clases), 90, 100), dtype="uint8")
+  imagenes_prueba = np.empty((num_prueba * len(clases), 250, 250), dtype="uint8")
   clases_prueba = np.empty(num_prueba * len(clases), dtype="uint8")
 
   # Cargar datos de Entrenamiento
@@ -185,7 +186,7 @@ def train_and_test():
       plt.box(False)
       plt.xticks([])
       plt.yticks([])
-  plt.show()
+  #plt.show()
 
   plt.figure()
   plt.imshow(imagenes_prueba[3], cmap="gray")
@@ -195,10 +196,19 @@ def train_and_test():
   plt.grid(False)
   plt.xticks([])
   plt.yticks([])
-  plt.show()
+  #plt.show()
 
   imagenes_entrena = imagenes_entrena / 255
   imagenes_prueba = imagenes_prueba / 255
+  plt.figure()
+  plt.imshow(imagenes_prueba[3], cmap="gray")
+  plt.colorbar()
+  plt.grid(False)
+  plt.box(False)
+  plt.grid(False)
+  plt.xticks([])
+  plt.yticks([])
+  #plt.show()
 
   modelo = train_model(imagenes_entrena, clases_entrena)
   exactitud = modelo.evaluate(imagenes_prueba, clases_prueba)
